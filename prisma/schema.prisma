@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+model User {
+  id       String   @id @default(cuid())
+  username String   @unique
+  email    String   @unique
+  password String
+  role     UserRole @default(USER)
+  active   Boolean  @default(true)
+
+  rickRollsAdded  RickRoll[] @relation("RickRollsAdded")
+  rickRollsEdited RickRoll[] @relation("RickRollsUpdated")
+}
+
+enum RickRollVerificationStatus {
+  UAREVIEW // Unauthenticated review. From extension
+  REVIEW
+  ACCEPTED
+  DENIED
+}
+
+model RickRoll {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  url                String                     @unique @db.Char(11)
+  verificationStatus RickRollVerificationStatus @default(REVIEW)
+
+  addedBy         User    @relation(name: "RickRollsAdded", fields: [addedByUserId], references: [id])
+  updatedBy       User?   @relation(name: "RickRollsUpdated", fields: [updatedByUserId], references: [id])
+  addedByUserId   String
+  updatedByUserId String?
+}
