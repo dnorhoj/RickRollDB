@@ -56,6 +56,9 @@ export default function Navbar({ page }) {
                     <Link href="/admin" passHref>
                       <NavDropdown.Item>Panel</NavDropdown.Item>
                     </Link>
+                    <Link href="/admin/queue" passHref>
+                      <NavDropdown.Item>Queue</NavDropdown.Item>
+                    </Link>
 
                     <NavDropdown.Divider />
                   </>
